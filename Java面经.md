@@ -30,4 +30,27 @@
 - <clinit>() 方法是由编译器自动收集类中所有的**静态变量赋值动作**和**静态代码块（static{}块）**合并产生的。此时前面的 value 才会被真正赋值为 123。
     
 - JVM 会保证子类的 <clinit>() 执行前，父类的 <clinit>() 已经执行完毕。
+JVM 中主要有三种系统提供的类加载器（以 Java 8 及之前的经典架构为例）：
 
+1. **启动类加载器（Bootstrap ClassLoader）：**
+    
+    - 由 C/C++ 语言实现，嵌套在 JVM 内部（Java 程序中无法直接引用，获取时会返回 null）。
+        
+    - 负责加载 JVM 核心类库，通常是 JAVA_HOME/jre/lib 目录下的核心 rt.jar、charsets.jar 等，或者被 -Xbootclasspath 参数指定的路径。
+        
+2. **扩展类加载器（Extension ClassLoader）：**
+    
+    - 由 Java 语言实现（sun.misc.Launcher$ExtClassLoader）。
+        
+    - 负责加载 JAVA_HOME/jre/lib/ext 目录下的类库，或系统变量 java.ext.dirs 指定目录下的类库。
+        
+    - (注：Java 9 引入模块化系统后，此加载器被重命名为**平台类加载器 Platform ClassLoader**)。
+        
+3. **应用程序类加载器（Application ClassLoader）：**
+    
+    - 由 Java 语言实现（sun.misc.Launcher$AppClassLoader）。
+        
+    - 负责加载用户类路径（ClassPath）上指定的类库。平时我们写的那些 Java 业务代码，如果没有特别指定，默认就是由它加载的。
+        
+
+除了以上三种，开发者还可以通过继承 java.lang.ClassLoader 自定义类加载器（**Custom ClassLoader**），用于实现类的加密解密、从特定网络/数据库加载类、或者实现应用的隔离（如 Tomcat）。
